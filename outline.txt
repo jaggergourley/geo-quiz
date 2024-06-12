@@ -1,0 +1,12 @@
+Flag quiz
+- select by continent, all or sovereign state
+- either type answer with autocomplete or select from several options
+
+Geography quiz
+- select by continent or all
+- 3d globe that will highlight given country
+- again type answer with autocomplete or select from several options
+
+More
+- allow users to login with Google to save score?
+- maybe add capitals as well?
