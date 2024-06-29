@@ -1,4 +1,3 @@
 # geo-quiz
 
-flag quiz
-map quiz
+- world map quiz

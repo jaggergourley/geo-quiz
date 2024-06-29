@@ -8,19 +8,27 @@ const camera = new THREE.PerspectiveCamera(
   1000
 );
 
-const renderer = new THREE.WebGLRenderer();
+const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setAnimationLoop(animate);
 document.body.appendChild(renderer.domElement);
 
-const geometry = new THREE.BoxGeometry(1, 1, 1);
-const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-const cube = new THREE.Mesh(geometry, material);
-scene.add(cube);
-camera.position.z = 5;
+const loader = new THREE.TextureLoader();
+const geometry = new THREE.IcosahedronGeometry(1, 12);
+const material = new THREE.MeshBasicMaterial({
+  map: loader.load("./8k_earth_daymap.jpg"),
+});
+const earth = new THREE.Mesh(geometry, material);
+scene.add(earth);
+
+const sunLight = new THREE.DirectionalLight(0xffffff);
+sunLight.position.set(-2, 0.5, 1.5);
+scene.add(sunLight);
+
+camera.position.z = 4;
 
 function animate() {
-  cube.rotation.x += 0.01;
-  cube.rotation.y += 0.01;
+  //  earth.rotation.x += 0.005;
+  earth.rotation.y += 0.005;
   renderer.render(scene, camera);
 }
