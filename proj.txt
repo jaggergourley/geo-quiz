@@ -1,0 +1,13 @@
+geo quiz
+
+- country quiz
+- by continent or all
+- 3D globe with map (three.js, D3.js)
+- move to random country
+- highlight country in some way
+- take input as text w/ autocomplete (awesomeplete)
+- score
+- time limit
+? real time leaderboard
+? possibly add captitals
+? login w/ Google or something

@@ -1,4 +1,4 @@
-// flagData.js
+// countryData.js
 
 const flagsData = [
   {
