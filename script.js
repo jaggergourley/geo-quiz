@@ -1,4 +1,8 @@
 import * as THREE from "three";
+import ThreeGlobe from "three-globe";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+
+import countries from "https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson";
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(
@@ -13,13 +17,11 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setAnimationLoop(animate);
 document.body.appendChild(renderer.domElement);
 
-const loader = new THREE.TextureLoader();
-const geometry = new THREE.IcosahedronGeometry(1, 12);
-const material = new THREE.MeshBasicMaterial({
-  map: loader.load("./8k_earth_daymap.jpg"),
-});
-const earth = new THREE.Mesh(geometry, material);
-scene.add(earth);
+const Globe = new ThreeGlobe()
+  .globeImageUrl("./8k_earth_daymap.jpg")
+  .polygonsData(countries.features);
+
+scene.add(Globe);
 
 const sunLight = new THREE.DirectionalLight(0xffffff);
 sunLight.position.set(-2, 0.5, 1.5);
