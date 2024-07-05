@@ -1,20 +1,22 @@
 import * as THREE from "three";
 import ThreeGlobe from "three-globe";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { TrackballControls } from "three/addons/controls/TrackballControls.js";
 
-fetch("./custom.geojson")
+fetch("./custom1.geojson")
   .then((res) => res.json())
   .then((countries) => {
     // Setup Globe
     const Globe = new ThreeGlobe()
       .globeImageUrl("./8k_earth_daymap.jpg")
       .polygonsData(countries.features)
+      .polygonAltitude(0.01)
       .polygonStrokeColor(() => "#111");
 
     // Setup renderer
     const renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setAnimationLoop(animate);
+    renderer.setSize(window.innerWidth / 2, window.innerHeight / 2);
+    //renderer.setAnimationLoop(animate);
     document.getElementById("globe-container").appendChild(renderer.domElement);
 
     // Setup scene
@@ -29,7 +31,76 @@ fetch("./custom.geojson")
     camera.updateProjectionMatrix();
     camera.position.z = 500;
 
-    function animate() {
+    const pointer = new THREE.Vector2();
+    const raycaster = new THREE.Raycaster();
+
+    // const onMouseMove = (event) => {
+    //   pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
+    //   pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+    //   raycaster.setFromCamera(pointer, camera);
+    //   const intersects = raycaster.intersectObjects(scene.children);
+
+    //   if (intersects.length > 0) {
+    //     intersects[0].object.material.color.set(0xff0000);
+    //   }
+    // };
+
+    // window.addEventListener("mousemove", onMouseMove);
+
+    const tbControls = new TrackballControls(camera, renderer.domElement);
+    tbControls.minDistance = 101;
+    tbControls.rotateSpeed = 5;
+    tbControls.zoomSpeed = 0.8;
+
+    // function animate() {
+    //   Globe.rotation.y += 0.005;
+    //   renderer.render(scene, camera);
+    // }
+
+    (function animate() {
+      tbControls.update();
       renderer.render(scene, camera);
+      requestAnimationFrame(animate);
+    })();
+
+    function selectRandomCountry() {
+      console.log(countries.features.length);
+      const randtest = Math.floor(Math.random() * 10);
+      let randIndex = Math.floor(Math.random() * countries.features.length); // number of countries in dataset
+      countries.features[randIndex].geometry.coordinates;
+
+      let avgX = 0;
+      let avgY = 0;
+
+      console.log(countries.features[46].properties.name);
+      console.log(countries.features[46].geometry.coordinates[0][0][0]);
+
+      let numCoords = 0;
+
+      for (
+        let i = 0;
+        i < countries.features[randIndex].geometry.coordinates.length;
+        i++
+      ) {
+        for (
+          let j = 0;
+          j < countries.features[randIndex].geometry.coordinates[i].length;
+          j++
+        ) {
+          numCoords += 1;
+          avgX += countries.features[randIndex].geometry.coordinates[i][j][0];
+          avgY += countries.features[randIndex].geometry.coordinates[i][j][1];
+        }
+      }
+
+      avgX /= numCoords;
+      avgY /= numCoords;
+
+      console.log(countries.features[randIndex].properties.name);
+      console.log(avgX, avgY);
     }
+
+    const next = document.getElementById("btn-next");
+    next.addEventListener("click", selectRandomCountry);
   });
