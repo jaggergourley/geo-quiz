@@ -65,40 +65,48 @@ fetch("./custom1.geojson")
     })();
 
     function selectRandomCountry() {
-      console.log(countries.features.length);
+      //console.log(countries.features.length);
       const randtest = Math.floor(Math.random() * 10);
       let randIndex = Math.floor(Math.random() * countries.features.length); // number of countries in dataset
       countries.features[randIndex].geometry.coordinates;
 
-      let avgX = 0;
-      let avgY = 0;
+      let longitude = countries.features[randIndex].properties.label_x;
+      let latitude = countries.features[randIndex].properties.label_y;
 
-      console.log(countries.features[46].properties.name);
-      console.log(countries.features[46].geometry.coordinates[0][0][0]);
+      // let numCoords = 0;
 
-      let numCoords = 0;
+      // for (
+      //   let i = 0;
+      //   i < countries.features[randIndex].geometry.coordinates.length;
+      //   i++
+      // ) {
+      //   for (
+      //     let j = 0;
+      //     j < countries.features[randIndex].geometry.coordinates[i].length;
+      //     j++
+      //   ) {
+      //     numCoords += 1;
+      //     longitude +=
+      //       countries.features[randIndex].geometry.coordinates[i][j][0];
+      //     latitude +=
+      //       countries.features[randIndex].geometry.coordinates[i][j][1];
+      //   }
+      // }
 
-      for (
-        let i = 0;
-        i < countries.features[randIndex].geometry.coordinates.length;
-        i++
-      ) {
-        for (
-          let j = 0;
-          j < countries.features[randIndex].geometry.coordinates[i].length;
-          j++
-        ) {
-          numCoords += 1;
-          avgX += countries.features[randIndex].geometry.coordinates[i][j][0];
-          avgY += countries.features[randIndex].geometry.coordinates[i][j][1];
-        }
-      }
-
-      avgX /= numCoords;
-      avgY /= numCoords;
+      // longitude /= numCoords;
+      // latitude /= numCoords;
 
       console.log(countries.features[randIndex].properties.name);
-      console.log(avgX, avgY);
+      console.log("latitude: " + latitude + " longitude: " + longitude);
+
+      Globe.rotation.set(
+        THREE.MathUtils.degToRad(latitude),
+        THREE.MathUtils.degToRad(-longitude),
+        0,
+        "XYZ"
+      );
+
+      camera.position.z = 250;
     }
 
     const next = document.getElementById("btn-next");
