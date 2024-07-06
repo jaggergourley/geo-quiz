@@ -15,7 +15,7 @@ fetch("./custom1.geojson")
 
     // Setup renderer
     const renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setSize(window.innerWidth / 2, window.innerHeight / 2);
+    renderer.setSize(window.innerWidth * 0.9, window.innerHeight * 0.9);
     //renderer.setAnimationLoop(animate);
     document.getElementById("globe-container").appendChild(renderer.domElement);
 
@@ -75,29 +75,87 @@ fetch("./custom1.geojson")
 
       // let numCoords = 0;
 
-      // for (
-      //   let i = 0;
-      //   i < countries.features[randIndex].geometry.coordinates.length;
-      //   i++
-      // ) {
-      //   for (
-      //     let j = 0;
-      //     j < countries.features[randIndex].geometry.coordinates[i].length;
-      //     j++
-      //   ) {
-      //     numCoords += 1;
-      //     longitude +=
-      //       countries.features[randIndex].geometry.coordinates[i][j][0];
-      //     latitude +=
-      //       countries.features[randIndex].geometry.coordinates[i][j][1];
-      //   }
-      // }
+      let maxLongitude = longitude;
+      let minLongitude = longitude;
+      let maxLatitude = latitude;
+      let minLatitude = latitude;
+
+      // multipolygons have an extra layer of depth, so we can set if statement
+      if (countries.features[randIndex].geometry.type == "Polygon") {
+        for (
+          let i = 0;
+          i < countries.features[randIndex].geometry.coordinates[0].length;
+          i++
+        ) {
+          maxLongitude = Math.max(
+            maxLongitude,
+            countries.features[randIndex].geometry.coordinates[0][i][0]
+          );
+          minLongitude = Math.min(
+            minLongitude,
+            countries.features[randIndex].geometry.coordinates[0][i][0]
+          );
+          maxLatitude = Math.max(
+            maxLatitude,
+            countries.features[randIndex].geometry.coordinates[0][i][1]
+          );
+          minLatitude = Math.min(
+            minLatitude,
+            countries.features[randIndex].geometry.coordinates[0][i][1]
+          );
+          // numCoords += 1;
+          // longitude +=
+          //   countries.features[randIndex].geometry.coordinates[i][j][0];
+          // latitude +=
+          //   countries.features[randIndex].geometry.coordinates[i][j][1];
+        }
+      } else {
+        for (
+          let i = 0;
+          i < countries.features[randIndex].geometry.coordinates[0].length;
+          i++
+        ) {
+          for (
+            let j = 0;
+            j < countries.features[randIndex].geometry.coordinates[0][i].length;
+            j++
+          ) {
+            maxLongitude = Math.max(
+              maxLongitude,
+              countries.features[randIndex].geometry.coordinates[0][i][j][0]
+            );
+            minLongitude = Math.min(
+              minLongitude,
+              countries.features[randIndex].geometry.coordinates[0][i][j][0]
+            );
+            maxLatitude = Math.max(
+              maxLatitude,
+              countries.features[randIndex].geometry.coordinates[0][i][j][1]
+            );
+            minLatitude = Math.min(
+              minLatitude,
+              countries.features[randIndex].geometry.coordinates[0][i][j][1]
+            );
+          }
+        }
+      }
 
       // longitude /= numCoords;
       // latitude /= numCoords;
 
       console.log(countries.features[randIndex].properties.name);
+      console.log(countries.features[randIndex].geometry.type);
       console.log("latitude: " + latitude + " longitude: " + longitude);
+      console.log(
+        "maxLat: " +
+          maxLatitude +
+          " minLat: " +
+          minLatitude +
+          " maxLong: " +
+          maxLongitude +
+          " minLong: " +
+          minLongitude
+      );
 
       Globe.rotation.set(
         THREE.MathUtils.degToRad(latitude),
@@ -106,6 +164,9 @@ fetch("./custom1.geojson")
         "XYZ"
       );
 
+      // Thinking we could set zoom based on high & low lat/long to have basically a
+      // square that defines the scale of our zoom. We could find area of that
+      // square then define zoom pos as proportional to that square
       camera.position.z = 250;
     }
 
