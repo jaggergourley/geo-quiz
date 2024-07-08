@@ -145,7 +145,9 @@ fetch("./custom1.geojson")
       // longitude /= numCoords;
       // latitude /= numCoords;
 
-      console.log(countries.features[randIndex].properties.name);
+      let countryName = countries.features[randIndex].properties.name;
+
+      console.log(countryName);
       console.log(countries.features[randIndex].geometry.type);
       console.log("latitude: " + latitude + " longitude: " + longitude);
       console.log(
@@ -166,6 +168,15 @@ fetch("./custom1.geojson")
         "XYZ"
       );
 
+      Globe.polygonCapColor(({ properties }) => {
+        return properties.name === countryName
+          ? "rgba(0, 200, 0, 1.0)"
+          : "rgba(0, 0, 0, 0.01)";
+      });
+      Globe.polygonAltitude(({ properties }) => {
+        return properties.name === countryName ? 0.1 : 0.01;
+      });
+
       // Thinking we could set zoom based on high & low lat/long to have basically a
       // square that defines the scale of our zoom. We could find area of that
       // square then define zoom pos as proportional to that square
@@ -177,26 +188,6 @@ fetch("./custom1.geojson")
       let areaHeight = maxLatitude - minLatitude;
       let areaWidth = maxLongitude - minLongitude;
       camera.position.z = 150;
-
-      const ring = [...Array(1).keys()].map(() => ({
-        lat: latitude,
-        lng: longitude,
-        maxR: Math.random() * 20 + 3,
-        propagationSpeed: (Math.random() - 0.5) * 20 + 1,
-        repeatPeriod: Math.random() * 2000 + 200,
-      }));
-
-      const colorInterpolator = (t) => "rgba(255,100,50,0.5)";
-
-      const Ripple = new ThreeGlobe()
-        .globeImageUrl("./8k_earth_daymap.jpg")
-        .ringsData(ring)
-        .ringColor(() => colorInterpolator)
-        .ringMaxRadius("maxR")
-        .ringPropagationSpeed("propagationSpeed")
-        .ringRepeatPeriod("repeatPeriod");
-
-      scene.add(Ripple);
     }
 
     const next = document.getElementById("btn-next");
