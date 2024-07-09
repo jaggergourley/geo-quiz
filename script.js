@@ -33,23 +33,7 @@ fetch("./custom1.geojson")
     camera.updateProjectionMatrix();
     camera.position.z = 300;
 
-    const pointer = new THREE.Vector2();
-    const raycaster = new THREE.Raycaster();
-
-    // const onMouseMove = (event) => {
-    //   pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
-    //   pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
-    //   raycaster.setFromCamera(pointer, camera);
-    //   const intersects = raycaster.intersectObjects(scene.children);
-
-    //   if (intersects.length > 0) {
-    //     intersects[0].object.material.color.set(0xff0000);
-    //   }
-    // };
-
-    // window.addEventListener("mousemove", onMouseMove);
-
+    // Setup trackball controls
     const tbControls = new TrackballControls(camera, renderer.domElement);
     tbControls.minDistance = 101;
     tbControls.rotateSpeed = 5;
@@ -66,23 +50,21 @@ fetch("./custom1.geojson")
       requestAnimationFrame(animate);
     })();
 
+    // Function to select and focus on random country
     function selectRandomCountry() {
       //console.log(countries.features.length);
-      const randtest = Math.floor(Math.random() * 10);
       let randIndex = Math.floor(Math.random() * countries.features.length); // number of countries in dataset
       countries.features[randIndex].geometry.coordinates;
 
       let longitude = countries.features[randIndex].properties.label_x;
       let latitude = countries.features[randIndex].properties.label_y;
 
-      // let numCoords = 0;
-
       let maxLongitude = longitude;
       let minLongitude = longitude;
       let maxLatitude = latitude;
       let minLatitude = latitude;
 
-      // multipolygons have an extra layer of depth, so we can set if statement
+      // MultiPolygon arrays have an extra layer of depth, so we set if statement
       if (countries.features[randIndex].geometry.type == "Polygon") {
         for (
           let i = 0;
@@ -105,11 +87,6 @@ fetch("./custom1.geojson")
             minLatitude,
             countries.features[randIndex].geometry.coordinates[0][i][1]
           );
-          // numCoords += 1;
-          // longitude +=
-          //   countries.features[randIndex].geometry.coordinates[i][j][0];
-          // latitude +=
-          //   countries.features[randIndex].geometry.coordinates[i][j][1];
         }
       } else {
         for (
@@ -142,9 +119,6 @@ fetch("./custom1.geojson")
         }
       }
 
-      // longitude /= numCoords;
-      // latitude /= numCoords;
-
       let countryName = countries.features[randIndex].properties.name;
 
       console.log(countryName);
@@ -174,7 +148,7 @@ fetch("./custom1.geojson")
           : "rgba(0, 0, 0, 0.01)";
       });
       Globe.polygonAltitude(({ properties }) => {
-        return properties.name === countryName ? 0.1 : 0.01;
+        return properties.name === countryName ? 0.01 : 0.001;
       });
 
       // Thinking we could set zoom based on high & low lat/long to have basically a
@@ -190,7 +164,17 @@ fetch("./custom1.geojson")
       let area = areaHeight * areaWidth;
       console.log("Area: " + area);
 
-      camera.position.z = 200;
+      if (area >= 1000) {
+        camera.position.z = 250;
+      } else if (area >= 50) {
+        camera.position.z = 200;
+      } else if (area >= 20) {
+        camera.position.z = 175;
+      } else if (area >= 5) {
+        camera.position.z = 150;
+      } else {
+        camera.position.z = 135;
+      }
     }
 
     const next = document.getElementById("btn-next");
