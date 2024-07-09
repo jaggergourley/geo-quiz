@@ -10,7 +10,7 @@ fetch("./custom1.geojson")
     const Globe = new ThreeGlobe()
       .globeImageUrl("./8k_earth_daymap.jpg")
       .polygonsData(countries.features)
-      .polygonAltitude(0.01)
+      .polygonAltitude(0.001)
       .polygonCapColor(() => "rgba(0, 0, 0, 0.01)")
       .polygonSideColor(() => "rgba(0, 0, 0, 0.01)")
       .polygonStrokeColor(() => "#111");
@@ -31,7 +31,7 @@ fetch("./custom1.geojson")
     const camera = new THREE.PerspectiveCamera();
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
-    camera.position.z = 500;
+    camera.position.z = 300;
 
     const pointer = new THREE.Vector2();
     const raycaster = new THREE.Raycaster();
@@ -53,7 +53,7 @@ fetch("./custom1.geojson")
     const tbControls = new TrackballControls(camera, renderer.domElement);
     tbControls.minDistance = 101;
     tbControls.rotateSpeed = 5;
-    tbControls.zoomSpeed = 0.8;
+    tbControls.zoomSpeed = 0.99;
 
     // function animate() {
     //   Globe.rotation.y += 0.005;
@@ -114,29 +114,29 @@ fetch("./custom1.geojson")
       } else {
         for (
           let i = 0;
-          i < countries.features[randIndex].geometry.coordinates[0].length;
+          i < countries.features[randIndex].geometry.coordinates.length;
           i++
         ) {
           for (
             let j = 0;
-            j < countries.features[randIndex].geometry.coordinates[0][i].length;
+            j < countries.features[randIndex].geometry.coordinates[i][0].length;
             j++
           ) {
             maxLongitude = Math.max(
               maxLongitude,
-              countries.features[randIndex].geometry.coordinates[0][i][j][0]
+              countries.features[randIndex].geometry.coordinates[i][0][j][0]
             );
             minLongitude = Math.min(
               minLongitude,
-              countries.features[randIndex].geometry.coordinates[0][i][j][0]
+              countries.features[randIndex].geometry.coordinates[i][0][j][0]
             );
             maxLatitude = Math.max(
               maxLatitude,
-              countries.features[randIndex].geometry.coordinates[0][i][j][1]
+              countries.features[randIndex].geometry.coordinates[i][0][j][1]
             );
             minLatitude = Math.min(
               minLatitude,
-              countries.features[randIndex].geometry.coordinates[0][i][j][1]
+              countries.features[randIndex].geometry.coordinates[i][0][j][1]
             );
           }
         }
@@ -187,7 +187,10 @@ fetch("./custom1.geojson")
 
       let areaHeight = maxLatitude - minLatitude;
       let areaWidth = maxLongitude - minLongitude;
-      camera.position.z = 150;
+      let area = areaHeight * areaWidth;
+      console.log("Area: " + area);
+
+      camera.position.z = 200;
     }
 
     const next = document.getElementById("btn-next");
