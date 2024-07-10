@@ -3,6 +3,10 @@ import ThreeGlobe from "three-globe";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { TrackballControls } from "three/addons/controls/TrackballControls.js";
 
+$("#checkbox-all").click(function () {
+  $(this.form.elements).filter(":checkbox").prop("checked", this.checked);
+});
+
 fetch("./custom1.geojson")
   .then((res) => res.json())
   .then((countries) => {
