@@ -5,25 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>geoquiz</title>
     <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="awesomplete.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
   </head>
   <body>
     <div id="globe-container"></div>
     <button id="btn-next">next</button>
-    <input type="checkbox" id="checkbox-africa" name="africa" />
-    <label for="africa">Africa</label>
-    <input type="checkbox" id="checkbox-asia" name="asia" />
-    <label for="asia">Asia</label>
-    <input type="checkbox" id="checkbox-europe" name="europe" />
-    <label for="europe">Europe</label>
-    <input type="checkbox" id="checkbox-north america" name="north-america" />
-    <label for="north-america">North America</label>
-    <input type="checkbox" id="checkbox-south america" name="south-america" />
-    <label for="south-america">South America</label>
-    <input type="checkbox" id="checkbox-oceania" name="oceania" />
-    <label for="oceania">Oceania</label>
-    <input type="checkbox" id="checkbox-all" name="all" />
-    <label for="all">All</label>
+    <form>
+      <input type="checkbox" id="checkbox-africa" name="africa" />
+      <label for="africa">Africa</label>
+      <input type="checkbox" id="checkbox-asia" name="asia" />
+      <label for="asia">Asia</label>
+      <input type="checkbox" id="checkbox-europe" name="europe" />
+      <label for="europe">Europe</label>
+      <input type="checkbox" id="checkbox-north" name="north-america" />
+      <label for="north-america">North America</label>
+      <input type="checkbox" id="checkbox-south" name="south-america" />
+      <label for="south-america">South America</label>
+      <input type="checkbox" id="checkbox-oceania" name="oceania" />
+      <label for="oceania">Oceania</label>
+      <input type="checkbox" id="checkbox-all" name="all" />
+      <label for="all">All</label>
+    </form>
+    <button id="btn-start">start</button>
+    <input type="text" id="input-text" placeholder="Enter Country Name" />
 
     <script type="module" src="./script.js"></script>
+    <script src="https://cdnjs.com/libraries/awesomplete"></script>
+    <script src="awesomplete.js" async></script>
   </body>
 </html>
