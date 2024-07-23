@@ -90,23 +90,13 @@ function getCountryNumbers() {
   }
 
   countryNums = shuffle(countryNums);
-  console.log("countryNums: " + countryNums);
   return countryNums;
 }
 
 const start = document.getElementById("btn-start");
 start.addEventListener("click", beginFetch);
 
-// let input = document.getElementById("input-text");
-// let awesomplete = new Awesomplete(input, {
-//   minChars: 1,
-//   maxItems: 10,
-//   autoFirst: true,
-// });
-// awesomplete.list = [];
-
 // Within here, anything related to globe manipulation or reading from geojson datacan
-
 function beginFetch() {
   fetch("./custom1.geojson")
     .then((res) => res.json())
@@ -152,21 +142,58 @@ function beginFetch() {
         requestAnimationFrame(animate);
       })();
 
+      function getCountryNames() {
+        let names = [];
+        for (let i = 0; i < countries.features.length; i++) {
+          names.push(countries.features[i].properties.name);
+        }
+        return names;
+      }
+
+      let score = 0;
       let index = 0;
       console.log("index: " + index);
       let countryNumbers = getCountryNumbers();
       console.log("countryNumbers: " + countryNumbers);
 
+      let input = document.getElementById("input-text");
+      let awesomplete = new Awesomplete(input, {
+        minChars: 1,
+        maxItems: 10,
+        autoFirst: true,
+      });
+      awesomplete.list = getCountryNames();
+
+      setTimeout(function () {
+        selectNextCountry(index);
+      }, 5000);
+
       // Button listeners
-      const next = document.getElementById("btn-next");
-      next.addEventListener("click", () => {
+      const enter = document.getElementById("btn-enter");
+      enter.addEventListener("click", () => {
+        compareInput(index, input.value);
+      });
+      enter.addEventListener("click", () => {
         selectNextCountry(index);
       });
 
+      function compareInput(i, input) {
+        let countryName =
+          countries.features[countryNumbers[i - 1]].properties.name;
+        console.log("country from compare: " + countryName);
+        console.log("input from compare: " + input);
+
+        if (input == countryName) {
+          console.log("correct");
+          score += 1;
+        } else {
+          console.log("incorrect, it was " + countryName);
+        }
+        console.log("score: " + score);
+      }
+
       // Rotate view and highlight country
       function rotateHighlight(latitude, longitude, countryName) {
-        console.log("rotateHighlight called");
-
         Globe.rotation.set(
           THREE.MathUtils.degToRad(latitude),
           THREE.MathUtils.degToRad(-longitude),
@@ -184,8 +211,6 @@ function beginFetch() {
       }
 
       function zoom(area) {
-        console.log("zoom called");
-
         if (area >= 1000) {
           camera.position.z = 250;
         } else if (area >= 50) {
@@ -200,8 +225,6 @@ function beginFetch() {
       }
 
       function calcArea(latitude, longitude, index) {
-        console.log("area called");
-
         let maxLongitude = longitude;
         let minLongitude = longitude;
         let maxLatitude = latitude;
@@ -285,10 +308,6 @@ function beginFetch() {
 
       // Function to select and focus on the next country
       function selectNextCountry(i) {
-        // want to iterate through countries 1 by one, on click
-        // should simply iterate through the countryNums array
-        console.log("nextCountry called");
-
         let longitude =
           countries.features[countryNumbers[i]].properties.label_x;
         let latitude = countries.features[countryNumbers[i]].properties.label_y;
